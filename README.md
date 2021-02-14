@@ -6,7 +6,8 @@ You can download datasets that have been pre-processed:
 - ColdRec:
 https://pan.baidu.com/s/1AkTImhvnD8WyXCTOuynZ8g code(提取码): 9cs2
 https://pan.baidu.com/s/1byW5uCZbdEjGzoXJAlPalQ code(提取码): 856z
-- Kuaibao will be released soon.
+- Kuaibao:
+https://pan.baidu.com/s/1-_1fY7iSLMgc8jYnqkdcnQ code(提取码): em3g
 
 
 ## Train in the CL scenario
