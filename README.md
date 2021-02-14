@@ -2,8 +2,11 @@
 
 ## Datasets
 You can download datasets that have been pre-processed:
-
-
+- ML20: https://pan.baidu.com/s/14pk0N-yraoxGgsnbJRPG5Q code(提取码): 7yha
+- ColdRec:
+https://pan.baidu.com/s/1AkTImhvnD8WyXCTOuynZ8g code(提取码): 9cs2
+https://pan.baidu.com/s/1byW5uCZbdEjGzoXJAlPalQ code(提取码): 856z
+- Kuaibao will be released soon.
 
 
 ## Train in the CL scenario
@@ -22,9 +25,6 @@ Execute example:
 ```
 sh train_sc2.sh
 ```
-
-## Configuration
-
 
 ## References
 https://github.com/fajieyuan/nextitnet
