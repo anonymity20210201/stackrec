@@ -49,4 +49,4 @@ sh train_trans_sc1.sh
 - data_ratio: the percentage of training data
 - dilation_count: the number of  dilation factors {1,2,4,8}
 - num_blocks: the number of residual blocks
-- load_model: whether load pre-train model or not
+- load_model: whether load pre-trained model or not
