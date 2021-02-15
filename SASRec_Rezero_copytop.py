@@ -30,8 +30,6 @@ class SASRec_Rezero(nn.Module):
         self.method = model_para['method']
 
         self.hidden_size = model_para['hidden_factor']
-        self.emb_size = model_para['emb_size']
-        self.user_num = int(model_para['user_size'])
         self.item_num = int(model_para['item_size'])
         self.max_len = model_para['seq_len']
         self.device = torch.device(device)
@@ -39,13 +37,9 @@ class SASRec_Rezero(nn.Module):
         self.num_heads = model_para['num_heads']
         self.dropout_rate = model_para['dropout']
 
-        self.user_embeddings = nn.Embedding(
-            num_embeddings=self.user_num,
-            embedding_dim=self.emb_size,
-        )
         self.item_embeddings = nn.Embedding(
             num_embeddings=self.item_num,
-            embedding_dim=self.emb_size,
+            embedding_dim=self.hidden_size,
         )
         self.pos_embeddings = nn.Embedding(
             num_embeddings=self.max_len,
@@ -56,15 +50,12 @@ class SASRec_Rezero(nn.Module):
         if self.load_model:
             self.model_path = model_para['model_path']
             self.reader = torch.load(self.model_path)
-            self.user_embeddings.weight = Parameter(self.reader['user_embeddings.weight'])
             self.item_embeddings.weight = Parameter(self.reader['item_embeddings.weight'])
             self.pos_embeddings.weight = Parameter(self.reader['pos_embeddings.weight'])
-            print("load user_embeddings.weight")
             print("load item_embeddings.weight")
             print("load pos_embeddings.weight")
         else:    
             # init embedding
-            nn.init.normal_(self.user_embeddings.weight, 0, 0.01)
             nn.init.normal_(self.item_embeddings.weight, 0, 0.01)
             nn.init.normal_(self.pos_embeddings.weight, 0, 0.01)
 
@@ -78,6 +69,7 @@ class SASRec_Rezero(nn.Module):
         #layer norm
         self.layer_norm_pre = nn.LayerNorm(self.hidden_size)
 
+
         #softmax Layer
         self.final = nn.Linear(self.hidden_size, self.item_num)
         #
@@ -87,15 +79,11 @@ class SASRec_Rezero(nn.Module):
         #     print("load final.weight")
         #     print("load final.bias")
         
-    def forward(self, users, inputs, onecall=True):
-        user_emb = self.user_embeddings(users)
+    def forward(self, inputs, onecall=True):
         input_emb = self.item_embeddings(inputs)
         pos_emb_input = torch.cat(inputs.size(0)*[torch.arange(start=0,end=inputs.size(1)).to(self.device).unsqueeze(0)])
         pos_emb_input = pos_emb_input.long()
         pos_emb = self.pos_embeddings(pos_emb_input)
-        #input_emb = user_emb + input_emb
-        user_emb = user_emb.expand((user_emb.size(0), input_emb.size(1), user_emb.size(2)))
-        input_emb = torch.cat([user_emb,input_emb], dim=2)
         x = input_emb + pos_emb
 
         x = self.dropout(x)
