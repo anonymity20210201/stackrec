@@ -11,7 +11,7 @@ class Data_Loader:
         positive_data_file = options['dir_name']
         positive_examples = list(open(positive_data_file, "r").readlines())
         positive_examples = [s for s in positive_examples]
-        
+
         padid = str(options['padid'])
 
         split_tip = ','
@@ -32,5 +32,3 @@ class Data_Loader:
         vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
         self.item = np.array(list(vocab_processor.fit_transform(new_positive_examples)))
         self.item_dict = vocab_processor.vocabulary_._mapping
-
-

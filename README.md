@@ -15,7 +15,7 @@ https://pan.baidu.com/s/1-_1fY7iSLMgc8jYnqkdcnQ code(提取码): em3g
 Execute example:
 
 ```
-sh train_sc1.sh
+sh train_next_sc1.sh
 ```
 
 
@@ -24,7 +24,7 @@ sh train_sc1.sh
 Execute example:
 
 ```
-sh train_sc2.sh
+sh train_next_sc2.sh
 ```
 
 ## Train in the TF scenario
@@ -32,11 +32,21 @@ sh train_sc2.sh
 Execute example:
 
 ```
-sh train_sc3.sh
+sh train_next_sc3.sh
 ```
+
+## Stacking with Transformer architecture
+
+Execute example:
+
+```
+sh train_trans_sc1.sh
+```
+
 
 ## Key Configuration
 - method: five stacking methods including from_scratch, stackC, stackA, stackR and stackE
 - data_ratio: the percentage of training data
 - dilation_count: the number of  dilation factors {1,2,4,8}
+- num_blocks: the number of residual blocks
 - load_model: whether load pre-train model or not
