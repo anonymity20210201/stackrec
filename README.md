@@ -35,7 +35,7 @@ Execute example:
 sh train_sc3.sh
 ```
 
-## configuration
+## Key Configuration
 - method: five stacking methods including from_scratch, stackC, stackA, stackR and stackE
 - data_ratio: the percentage of training data
 - dilation_count: the number of  dilation factors {1,2,4,8}
