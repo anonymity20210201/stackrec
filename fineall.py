@@ -32,7 +32,7 @@ def shuffleseq(train_set,padtoken):
 
 
     x_train = np.array(shuffle_seqtrain)  # list to ndarray
-    print "shuffling is done!"
+    print("shuffling is done!")
     return x_train
 
 def random_neq(l, r, s):
@@ -68,7 +68,12 @@ def main():
                         help='default=0.2 means 80% training 20% testing')
     parser.add_argument('--is_generatesubsession', type=bool, default=False,
                         help='whether generating a subsessions, e.g., 12345-->01234,00123,00012  It may be useful for very some very long sequences')
-
+    parser.add_argument('--save_dir', type=str, default="Models/ml20",
+                        help='save dir path')
+    parser.add_argument('--model_path', type=str, default="Models/",
+                        help='load model path')
+    parser.add_argument('--dilation_count', type=int, default=16,
+                        help='dilation count number')
     parser.add_argument('--padtoken', type=str, default='0',
                         help='is the padding token in the beggining of the sequence')
     parser.add_argument('--negtive_samples', type=int, default='99',
@@ -85,10 +90,10 @@ def main():
 
     items = dl.item_dict
     items_len = len(items)
-    print "len(items)", len(items)
+    print("len(items)", len(items))
     targets = dl.target_dict
     targets_len=len(targets)
-    print "len(targets)", len(targets)
+    print("len(targets)", len(targets))
 
     negtive_samples=args.negtive_samples
     top_k=args.top_k
@@ -116,7 +121,7 @@ def main():
         'item_size': len(items),
         'target_item_size': len(targets),
         'dilated_channels': 64,
-        'dilations': [1,4,1,4,1,4,1,4,],
+        'dilations': [1,4]*args.dilation_count,
         'kernel_size': 3,
         'learning_rate':0.001,
         'batch_size': 512, #you can not use batch_size=1 since in the following you use np.squeeze will reuduce one dimension
@@ -126,8 +131,8 @@ def main():
 
 
 
-    new_saver = tf.train.import_meta_graph('Models/coldrec_4_8_a0201/4_0.001_0.8_350000.ckpt.meta')
-    new_saver.restore(sess, tf.train.latest_checkpoint('Models/coldrec_4_8_a0201/'))
+    new_saver = tf.train.import_meta_graph(args.model_path)
+    new_saver.restore(sess, tf.train.latest_checkpoint(args.save_dir))
     graph = tf.get_default_graph()
 
     trainable_vars = tf.trainable_variables()
@@ -141,7 +146,7 @@ def main():
     for i in range(64):
         cnn_vars.append(tf.trainable_variables()[i])
     context_embedding = tf.get_collection("context_embedding")[0]
-    print "allitem_embeddings", (sess.run(allitem_embeddings))
+    print("allitem_embeddings", (sess.run(allitem_embeddings)))
 
 
 
@@ -236,11 +241,11 @@ def main():
             end = time.time()
 
             if numIters % args.eval_iter == 0:
-                print "-------------------------------------------------------train1"
-                print "LOSS: {}\Reg_LOSS: {}\tITER: {}\tBATCH_NO: {}\t STEP:{}\t total_batches:{}".format(
-                    loss_out, reg_losses_out,iter, batch_no, numIters, train_set.shape[0] / batch_size)
-                print "TIME FOR BATCH", end - start
-                print "TIME FOR ITER (mins)", (end - start) * (train_set.shape[0] / batch_size) / 60.0
+                print("-------------------------------------------------------train1")
+                print("LOSS: {}\Reg_LOSS: {}\tITER: {}\tBATCH_NO: {}\t STEP:{}\t total_batches:{}".format(
+                    loss_out, reg_losses_out,iter, batch_no, numIters, train_set.shape[0] / batch_size))
+                print("TIME FOR BATCH", end - start)
+                print("TIME FOR ITER (mins)", (end - start) * (train_set.shape[0] / batch_size) / 60.0)
 
             batch_no += 1
 
@@ -252,17 +257,12 @@ def main():
                 mrrs = []  # ---add 1
 
                 while (batch_no_test + 1) * batch_size_test < valid_set.shape[0]:
-                    if (numIters / (args.eval_iter) < 10):
-                        if (batch_no_test > 20):
-                            break
-                    else:
-                        if (batch_no_test > 500):
-                            break
+
                     item_batch = valid_set[batch_no_test * batch_size_test: (batch_no_test + 1) * batch_size_test, :]
                     pos_batch = item_batch[:, -1]  # [3 6] used for negative sampling
                     source_batch = item_batch[:, :-1]  #
                     pos_target = item_batch[:, -1:]  # [[3][6]]
-                    # randomly choose 999 negative items
+
                     neg_target = np.array([random_negs(1, targets_len, negtive_samples, s) for s in pos_batch])
                     target=np.array(np.concatenate([neg_target,pos_target],1))
 
@@ -274,9 +274,9 @@ def main():
                         })
 
                     #note that  in top_k_batch[1], such as [1 9 4 5 0], we just need to check whether 0 is here, that's fine
-                    top_k=np.squeeze(top_k_batch[1]) #remove one dimension since e.g., [[[1,2,4]],[[34,2,4]]]-->[[1,2,4],[34,2,4]]
+                    top_k = np.squeeze(top_k_batch[1]) #remove one dimension since e.g., [[[1,2,4]],[[34,2,4]]]-->[[1,2,4],[34,2,4]]
                     for i in range(top_k.shape[0]):
-                        top_k_per_batch=top_k[i]
+                        top_k_per_batch = top_k[i]
                         predictmap = {ch: i for i, ch in enumerate(top_k_per_batch)}  # add 2
                         rank = predictmap.get(negtive_samples)  # add 3
                         if rank == None:
@@ -286,18 +286,15 @@ def main():
                             hits.append(1.0)
                             mrrs.append(1.0 / (rank + 1))  # add 4
                     batch_no_test += 1
-                print "-------------------------------------------------------Accuracy"
+                print("-------------------------------------------------------Accuracy")
                 if len(hits)!=0:
                     hit_5 = sum(hits)/float(len(hits))
                     mrr_5 = sum(mrrs)/float(len(mrrs))
-                    print "Accuracy hit_n:", hit_5, "MRR_n:", mrr_5  # 5
+                    print("Accuracy hit_n:", hit_5, "MRR_n:", mrr_5)  # 5
                     if mrr_5 > best_mrr:
                         best_mrr = mrr_5
                         print("best is here!!!!!!!!!!!!!!!!!!!!!!!!", mrr_5, hit_5)
             numIters += 1
-            # if numIters % args.save_para_every == 0:
-            #     save_path = saver.save(sess,
-            #                            "Data/Models/generation_model/nextitnet_cloze_transfer_finetune_avg".format(iter, numIters))
 
 
 if __name__ == '__main__':

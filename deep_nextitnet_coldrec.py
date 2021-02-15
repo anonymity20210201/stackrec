@@ -13,40 +13,46 @@ import ast
 
 tf.set_random_seed(10)
 
+#Strongly suggest running codes on GPU with more than 10G memory!!!
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--top_k', type=int, default=5,
                         help='sample from top k predictions')
     parser.add_argument('--beta1', type=float, default=0.9,
                         help='hyperpara-Adam')
-    parser.add_argument('--datapath', type=str, default="Data/movielen_20/movielen_20.csv",
+    parser.add_argument('--datapath', type=str, default="Data/coldrec/rec50_pretrain.csv",
                         help='data path')
-    parser.add_argument('--save_dir', type=str, default="Models/ml20_baseline_16_emb64_bs256",
+    parser.add_argument('--save_dir', type=str, default="Models/coldrec_baseline_4_emb64_bs256",
                         help='save dir path')                    
     parser.add_argument('--eval_iter', type=int, default=1000,
-                        help='output evry x steps')
+                        help='sample generator output evry x steps')
     parser.add_argument('--early_stop', type=int, default=10,
-                        help='after x eval_iter early stop')
+                        help='after x step early stop')
     parser.add_argument('--step', type=int, default=400000,
                         help='trainging step')                       
     parser.add_argument('--tt_percentage', type=float, default=0.2,
                         help='0.2 means 80% training 20% testing')
-    parser.add_argument('--data_ratio', type=float, default=0.4,
-                        help='real training data')
+    parser.add_argument('--data_ratio', type=float, default=1,
+                        help='real trainging data')
     parser.add_argument('--learning_rate', type=float, default=0.001,
                         help='learning rate')
-    parser.add_argument('--L2', type=float, default=0,
-                        help='L2 regularization')                       
-    parser.add_argument('--dilation_count', type=int, default=16,
+    parser.add_argument('--L2', type=float, default=0.001,
+                        help='L2 regularization')                        
+    parser.add_argument('--dilation_count', type=int, default=4,
                         help='dilation count number')                    
     parser.add_argument('--method', type=str, default="from_scratch",
-                        help='from_scratch, StackR, stackC, stackA')
+                        help='from_scratch, random_init, stack')              
     parser.add_argument('--load_model', type=ast.literal_eval, default=False,
                         help='whether loading pretrain model')
+    parser.add_argument('--copy_softmax', type=ast.literal_eval, default=True,
+                        help='whether copying softmax param')   
+    parser.add_argument('--copy_layernorm', type=ast.literal_eval, default=True,
+                        help='whether copying layernorm param')     
     parser.add_argument('--model_path', type=str, default="Models/",
                         help='load model path')
     parser.add_argument('--padid', type=int, default=0,
-                        help='pad id')                              
+                        help='pad id')                          
     args = parser.parse_args()
 
     print(args)
@@ -71,7 +77,6 @@ def main():
     train_set_len = len(train_set)
     train_index_set = set(list(range(train_set_len)))
 
-
     if ratio == 0.2:
         train_ratio = int(ratio * float(train_set_len))
         real_train_index_set = random.sample(list(train_index_set), train_ratio)
@@ -83,12 +88,12 @@ def main():
         last_train_ratio = int(last_ratio * float(train_set_len))
         last_train_index_set = random.sample(list(train_index_set), last_train_ratio)
         last_train_set = train_set[last_train_index_set]
-        
+
         remain_train_index_set = train_index_set - set(last_train_index_set)
         remain_len = len(remain_train_index_set)
-        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0/4.0 * float(remain_len)))
-        new_train_set = train_set[new_train_index_set] 
-    
+        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0 / 4.0 * float(remain_len)))
+        new_train_set = train_set[new_train_index_set]
+
         real_train_set = np.concatenate((last_train_set, new_train_set), axis=0)
         train_set = np.array(real_train_set)
         print("real train len", len(train_set))
@@ -97,18 +102,18 @@ def main():
         last_last_train_ratio = int(last_last_ratio * float(train_set_len))
         last_last_train_index_set = random.sample(list(train_index_set), last_last_train_ratio)
         last_last_train_set = train_set[last_last_train_index_set]
-        
+
         remain_train_index_set = train_index_set - set(last_last_train_index_set)
         remain_len = len(remain_train_index_set)
-        last_train_index_set = random.sample(list(remain_train_index_set), int(1.0/4.0 * float(remain_len)))
-        last_train_set = train_set[last_train_index_set] 
+        last_train_index_set = random.sample(list(remain_train_index_set), int(1.0 / 4.0 * float(remain_len)))
+        last_train_set = train_set[last_train_index_set]
         real_train_set = np.concatenate((last_last_train_set, last_train_set), axis=0)
 
         remain_train_index_set = remain_train_index_set - set(last_train_index_set)
         remain_len = len(remain_train_index_set)
-        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0/3.0 * float(remain_len)))
+        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0 / 3.0 * float(remain_len)))
         new_train_set = train_set[new_train_index_set]
-    
+
         real_train_set = np.concatenate((real_train_set, new_train_set), axis=0)
         train_set = np.array(real_train_set)
         print("real train len", len(train_set))
@@ -117,24 +122,24 @@ def main():
         last_last_train_ratio = int(last_last_ratio * float(train_set_len))
         last_last_train_index_set = random.sample(list(train_index_set), last_last_train_ratio)
         last_last_train_set = train_set[last_last_train_index_set]
-        
+
         remain_train_index_set = train_index_set - set(last_last_train_index_set)
         remain_len = len(remain_train_index_set)
-        last_train_index_set = random.sample(list(remain_train_index_set), int(1.0/4.0 * float(remain_len)))
-        last_train_set = train_set[last_train_index_set] 
+        last_train_index_set = random.sample(list(remain_train_index_set), int(1.0 / 4.0 * float(remain_len)))
+        last_train_set = train_set[last_train_index_set]
         real_train_set = np.concatenate((last_last_train_set, last_train_set), axis=0)
 
         remain_train_index_set = remain_train_index_set - set(last_train_index_set)
         remain_len = len(remain_train_index_set)
-        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0/3.0 * float(remain_len)))
+        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0 / 3.0 * float(remain_len)))
         new_train_set = train_set[new_train_index_set]
         real_train_set = np.concatenate((real_train_set, new_train_set), axis=0)
 
         remain_train_index_set = remain_train_index_set - set(new_train_index_set)
         remain_len = len(remain_train_index_set)
-        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0/2.0 * float(remain_len)))
+        new_train_index_set = random.sample(list(remain_train_index_set), int(1.0 / 2.0 * float(remain_len)))
         new_train_set = train_set[new_train_index_set]
-    
+
         real_train_set = np.concatenate((real_train_set, new_train_set), axis=0)
         train_set = np.array(real_train_set)
         print("real train len", len(train_set))
@@ -159,6 +164,8 @@ def main():
         'batch_size': 256,
         'load_model': args.load_model,
         'model_path': args.model_path,
+        'copy_softmax': args.copy_softmax,
+        'copy_layernorm': args.copy_layernorm,
         'method': args.method
     }
 
@@ -172,19 +179,21 @@ def main():
     itemrec.train_graph()
     optimizer = tf.train.AdamOptimizer(model_para['learning_rate'], beta1=args.beta1).minimize(itemrec.loss)
     itemrec.predict_graph(reuse=True)
-    
-    gpu_options = tf.GPUOptions(allow_growth=True)
-    sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
-    saver = tf.train.Saver(max_to_keep=1)
 
+    tf.add_to_collection("dilate_input", itemrec.dilate_input)
+    tf.add_to_collection("context_embedding", itemrec.context_embedding)
+
+    sess = tf.Session()
     init = tf.global_variables_initializer()
     sess.run(init)
+    saver = tf.train.Saver(max_to_keep=1)
 
+    #writer=tf.summary.FileWriter('./stack_graph',sess.graph)
+    
     numIters = 1
     max_mrr = 0
     break_stick = 0
     early_stop = 0
-
     while(1):
         if break_stick == 1:
             break
@@ -202,9 +211,7 @@ def main():
                 feed_dict={
                     itemrec.itemseq_input: item_batch
                 })
-
             end = time.time()
-
             if numIters % args.eval_iter == 0:
                 print("-------------------------------------------------------train")
                 print("LOSS: {}\tBATCH_NO: {}\t STEP:{}\t total_batches:{}".format(
@@ -213,6 +220,7 @@ def main():
                 print("TIME FOR EPOCH (mins)", (end - start) * (train_set.shape[0] / batch_size) / 60.0)
 
             batch_no += 1
+
 
             if numIters % args.eval_iter == 0:
                 print("-------------------------------------------------------test")
@@ -231,9 +239,11 @@ def main():
                         feed_dict={
                             itemrec.input_predict: item_batch
                         })
+                    #print(probs_10[1].shape) #(256,1,10)
                     for bi in range(batch_size_test):
                         pred_items_10 = probs_10[1][bi][-1]
                         pred_items_5 = probs_5[1][bi][-1]
+
 
                         true_item = item_batch[bi][-1]
                         predictmap_5 = {ch : i for i, ch in enumerate(pred_items_5)}

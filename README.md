@@ -1,4 +1,4 @@
-# StackRec
+# StackRec: Efficient Training of Very Deep Sequential Recommender Models by Iterative Stacking
 
 ## Datasets
 You can download datasets that have been pre-processed:
@@ -19,7 +19,7 @@ sh train_sc1.sh
 ```
 
 
-## Train in the TF scenario
+## Train in the TS scenario
 
 Execute example:
 
@@ -27,9 +27,16 @@ Execute example:
 sh train_sc2.sh
 ```
 
-## References
-https://github.com/fajieyuan/nextitnet
+## Train in the TF scenario
 
-https://github.com/fajieyuan/grec
+Execute example:
 
-https://github.com/fajieyuan/sigir2020_peterrec
+```
+sh train_sc3.sh
+```
+
+## configuration
+- method: five stacking methods including from_scratch, stackC, stackA, stackR and stackE
+- data_ratio: the percentage of training data
+- dilation_count: the number of  dilation factors {1,2,4,8}
+- load_model: whether load pre-train model or not

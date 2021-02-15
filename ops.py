@@ -26,7 +26,7 @@ def nextitnet_residual_block_rezero(input_, dilation, layer_id, method,
                 rez = tf.get_variable('rez', [1],
                                         initializer=tf.constant_initializer(initial_value, verify_shape=True))
 
-        if method == 'stackC' or method == 'stackA':
+        if method == 'stackC' or method == 'stackA' or method == 'stackE':
             rez = tf.get_variable('rez', [1],
                                 initializer=tf.constant_initializer(0.0))
 
@@ -76,7 +76,7 @@ def conv1d(input_, output_channels, method, layer_id, reader, layer_num, resbloc
            name="dilated_conv", trainable=True):
     with tf.variable_scope(name):
 
-        if method == 'from_scratch':
+        if method == 'from_scratch' or method == 'stackE':
             weight = tf.get_variable('weight', [1, kernel_size, input_.get_shape()[-1], output_channels],
                                     initializer=tf.truncated_normal_initializer(stddev=0.02, seed=1))
             bias = tf.get_variable('bias', [output_channels],
@@ -173,7 +173,7 @@ def layer_norm(x, layer_id, reader, method, layer_num, resblock_name, name, epsi
             gamma = tf.get_variable('gamma', [int(shape[-1])],
                                     initializer=tf.constant_initializer(1), trainable=trainable)
 
-        if method == 'stackC' or method == 'stackA':
+        if method == 'stackC' or method == 'stackA' or method == 'stackE':
             beta = tf.get_variable('beta', [int(shape[-1])],
                             initializer=tf.constant_initializer(0), trainable=trainable)
             gamma = tf.get_variable('gamma', [int(shape[-1])],
