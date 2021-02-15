@@ -22,9 +22,9 @@ class TransformerLayer_Rezero(nn.Module):
         return out
 
 
-class SASRec_Rezero(nn.Module):
+class SSEPT_Rezero(nn.Module):
     def __init__(self, model_para, device='gpu'):
-        super(SASRec_Rezero, self).__init__()
+        super(SSEPT_Rezero, self).__init__()
         self.model_para = model_para
         self.load_model = model_para['load_model']
         self.method = model_para['method']

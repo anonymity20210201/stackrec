@@ -37,7 +37,7 @@ model_path2="${save_dir}/${num_blocks1}_${learning_rate1}_${data_ratio1}_${step1
 
 gpu=4
 
-eval "CUDA_VISIBLE_DEVICES=${gpu} python -u baseline_ssept.py --eval_iter ${eval_iter1} --data_ratio ${data_ratio1} --step ${step1} --early_stop ${early_stop1} --learning_rate ${learning_rate1} --num_blocks ${num_blocks1} --method ${method1} --load_model ${load_model1}  --model_path ${model_path1} --save_dir ${save_dir} | tee ${logfile}"
+eval "CUDA_VISIBLE_DEVICES=${gpu} python -u baseline_SSEPT.py --eval_iter ${eval_iter1} --data_ratio ${data_ratio1} --step ${step1} --early_stop ${early_stop1} --learning_rate ${learning_rate1} --num_blocks ${num_blocks1} --method ${method1} --load_model ${load_model1}  --model_path ${model_path1} --save_dir ${save_dir} | tee ${logfile}"
 
-eval "CUDA_VISIBLE_DEVICES=${gpu} python -u baseline_ssept.py --eval_iter ${eval_iter2} --data_ratio ${data_ratio2} --step ${step2} --early_stop ${early_stop2} --learning_rate ${learning_rate2} --num_blocks ${num_blocks2} --method ${method2} --load_model ${load_model2}  --model_path ${model_path2} --save_dir ${save_dir} | tee -a ${logfile}"
+eval "CUDA_VISIBLE_DEVICES=${gpu} python -u baseline_SSEPT.py --eval_iter ${eval_iter2} --data_ratio ${data_ratio2} --step ${step2} --early_stop ${early_stop2} --learning_rate ${learning_rate2} --num_blocks ${num_blocks2} --method ${method2} --load_model ${load_model2}  --model_path ${model_path2} --save_dir ${save_dir} | tee -a ${logfile}"
 
