@@ -22,6 +22,7 @@ data_loader_finetune.py: the dataset loading file of NextItNet and GRec customiz
 generator_deep.py: the model file of NextItNet
 ops.py: the module file of NextItNet and GRec with stacking methods doubling blocks
 ops_copytop.py: the module file of NextItNet with stacking methods allowed to stack top blocks
+ops_original.py: the module file of NextItNet with stacking methods without alpha
 fineall.py: the training file of NextItNet customized for coldrec target dataset
 
 train_grec_sc1.sh: the shell script to train StackRec with GRec in CL scenario
