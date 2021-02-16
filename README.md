@@ -9,40 +9,87 @@ https://pan.baidu.com/s/1byW5uCZbdEjGzoXJAlPalQ code(提取码): 856z
 - Kuaibao:
 https://pan.baidu.com/s/1-_1fY7iSLMgc8jYnqkdcnQ code(提取码): em3g
 
+## File Description
+requirements.txt: the experiment environment
 
-## Train in the CL scenario
+train_nextitnet_sc1.sh: the shell script to train StackRec with NextItNet in CL scenario
+train_nextitnet_sc2.sh: the shell script to train StackRec with NextItNet in TF scenario
+train_nextitnet_sc3.sh: the shell script to train StackRec with NextItNet in TS scenario
+deep_nextitnet.py: the training file of NextItNet
+deep_nextitnet_coldrec.py: the training file of NextItNet customized for coldrec source dataset
+data_loader.py: the dataset loading file of NextItNet and GRec
+data_loader_finetune.py: the dataset loading file of NextItNet and GRec customized for coldrec dataset
+generator_deep.py: the model file of NextItNet
+ops.py: the module file of NextItNet and GRec with stacking methods doubling blocks
+ops_copytop.py: the module file of NextItNet with stacking methods allowed to stack top blocks
+fineall.py: the training file of NextItNet customized for coldrec target dataset
+
+train_grec_sc1.sh: the shell script to train StackRec with GRec in CL scenario
+deep_GRec: the traing file of GRec
+generator_deep_GRec.py: the model file of GRec
+utils_GRec.py: some tools for GRec
+
+train_sasrec_sc1.sh: the shell script to train StackRec with SASRec in CL scenario
+baseline_SASRec.py: the training file of SASRec
+Data_loader_SASRec.py: the dataset loading file of SASRec
+SASRec_Rezero.py: the model file of SASRec
+
+train_ssept_sc1.sh: the shell script to train StackRec with SSEPT in CL scenario
+baseline_SSEPT.py: the training file of SSEPT
+Data_loader_SSEPT.py the dataset loading file of SSEPT
+SSEPT_Rezero.py: the model file of SSEPT
+utils.py: some tools for SASRec and SSEPT
+Modules.py: the module file of SASRec and SSEPT using stacking methods
+
+
+## Stacking with NextItNet
+### Train in the CL scenario
 
 Execute example:
 
 ```
-sh train_next_sc1.sh
+sh train_nextitnet_sc1.sh
 ```
 
-
-## Train in the TS scenario
+### Train in the TS scenario
 
 Execute example:
 
 ```
-sh train_next_sc2.sh
+sh train_nextitnet_sc2.sh
 ```
 
-## Train in the TF scenario
+### Train in the TF scenario
 
 Execute example:
 
 ```
-sh train_next_sc3.sh
+sh train_nextitnet_sc3.sh
 ```
 
-## Stacking with Transformer architecture
+## Stacking with GRec
 
 Execute example:
 
 ```
-sh train_trans_sc1.sh
+sh train_grec_sc1.sh
 ```
 
+## Stacking with SASRec
+
+Execute example:
+
+```
+sh train_sasrec_sc1.sh
+```
+
+## Stacking with SSEPT
+
+Execute example:
+
+```
+sh train_ssept_sc1.sh
+```
 
 ## Key Configuration
 - method: five stacking methods including from_scratch, stackC, stackA, stackR and stackE

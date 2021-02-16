@@ -9,7 +9,7 @@ import argparse
 import Data_loader_SSEPT as Data_loader
 import os
 import random
-from SSEPT_Rezero_copytop import SSEPT_Rezero
+import SSEPT_Rezero
 import ast
 
 torch.manual_seed(10)

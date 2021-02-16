@@ -9,7 +9,7 @@ import argparse
 import Data_loader_SASRec as Data_loader
 import os
 import random
-from SASRec_Rezero_copytop import SASRec_Rezero
+import SASRec_Rezero
 import ast
 
 

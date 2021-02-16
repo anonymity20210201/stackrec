@@ -4,7 +4,7 @@ import argparse
 from utils import normalize
 from torch.nn.parameter import Parameter
 
-from Modules_copytop import *
+from Modules import *
 class TransformerLayer_Rezero(nn.Module):
     def __init__(self, hidden_size, num_heads, model_para, reader, layerid, layer_num, dropout_rate=0.5):
         super(TransformerLayer_Rezero, self).__init__()
