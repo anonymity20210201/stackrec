@@ -10,6 +10,7 @@ https://pan.baidu.com/s/1byW5uCZbdEjGzoXJAlPalQ code(提取码): 856z
 https://pan.baidu.com/s/1-_1fY7iSLMgc8jYnqkdcnQ code(提取码): em3g
 
 ## File Description
+```
 requirements.txt: the experiment environment
 
 train_nextitnet_sc1.sh: the shell script to train StackRec with NextItNet in CL scenario
@@ -41,7 +42,7 @@ Data_loader_SSEPT.py the dataset loading file of SSEPT
 SSEPT_Rezero.py: the model file of SSEPT
 utils.py: some tools for SASRec and SSEPT
 Modules.py: the module file of SASRec and SSEPT using stacking methods
-
+```
 
 ## Stacking with NextItNet
 ### Train in the CL scenario
