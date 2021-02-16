@@ -27,7 +27,7 @@ ops_original.py: the module file of NextItNet with stacking methods without alph
 fineall.py: the training file of NextItNet customized for coldrec target dataset
 
 train_grec_sc1.sh: the shell script to train StackRec with GRec in CL scenario
-deep_GRec: the traing file of GRec
+deep_GRec: the training file of GRec
 generator_deep_GRec.py: the model file of GRec
 utils_GRec.py: some tools for GRec
 
@@ -41,7 +41,7 @@ baseline_SSEPT.py: the training file of SSEPT
 Data_loader_SSEPT.py: the dataset loading file of SSEPT
 SSEPT_Rezero.py: the model file of SSEPT
 utils.py: some tools for SASRec and SSEPT
-Modules.py: the module file of SASRec and SSEPT using stacking methods
+Modules.py: the module file of SASRec and SSEPT with stacking methods
 ```
 
 ## Stacking with NextItNet
