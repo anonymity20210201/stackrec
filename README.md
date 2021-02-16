@@ -38,7 +38,7 @@ SASRec_Rezero.py: the model file of SASRec
 
 train_ssept_sc1.sh: the shell script to train StackRec with SSEPT in CL scenario
 baseline_SSEPT.py: the training file of SSEPT
-Data_loader_SSEPT.py the dataset loading file of SSEPT
+Data_loader_SSEPT.py: the dataset loading file of SSEPT
 SSEPT_Rezero.py: the model file of SSEPT
 utils.py: some tools for SASRec and SSEPT
 Modules.py: the module file of SASRec and SSEPT using stacking methods
