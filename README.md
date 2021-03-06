@@ -6,7 +6,7 @@ You can download datasets that have been pre-processed:
 - ColdRec:
 https://pan.baidu.com/s/1AkTImhvnD8WyXCTOuynZ8g code(提取码): 9cs2
 https://pan.baidu.com/s/1byW5uCZbdEjGzoXJAlPalQ code(提取码): 856z
-- Kuaibao (already desensitized): Permission is required from Tencent. If you hope to use it, we will open source after paper acceptance.
+- Kuaibao: Permission is required from Tencent. We will open source after paper acceptance.
 
 
 ## File Description
